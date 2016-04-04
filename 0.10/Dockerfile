@@ -11,7 +11,7 @@ RUN git clone https://github.com/mozilla-services/heka.git /heka
 
 WORKDIR /heka
 RUN git checkout versions/0.10
-COPY plugin_loader.cmake /heka/cmake/plugin_loader.cmake
+#COPY plugin_loader.cmake /heka/cmake/plugin_loader.cmake
 RUN /bin/bash -c 'source build.sh'
 
 COPY config.toml /app/config.toml
