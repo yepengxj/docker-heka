@@ -12,20 +12,21 @@ RUN git clone https://github.com/mozilla-services/heka.git /heka
 WORKDIR /heka
 RUN git checkout versions/0.10
 #COPY plugin_loader.cmake /heka/cmake/plugin_loader.cmake
-RUN /bin/bash -c 'source build.sh'
+RUN /bin/bash -c 'source build.sh' && \
+    make install
 
 COPY config.toml /app/config.toml
 
-RUN mkdir -p /usr/share/heka/lua_decoders && \
-    mkdir -p /usr/share/heka/lua_encoders && \
-    mkdir -p /usr/share/heka/lua_filters && \
-    mkdir -p /usr/share/heka/lua_modules && \
-    cp /heka/sandbox/lua/decoders/* /usr/share/heka/lua_decoders && \
-    cp /heka/sandbox/lua/encoders/* /usr/share/heka/lua_encoders && \
-    cp /heka/sandbox/lua/filters/* /usr/share/heka/lua_filters && \
-    cp /heka/build/heka/lib/luasandbox/modules/* /usr/share/heka/lua_modules
+#RUN mkdir -p /usr/share/heka/lua_decoders && \
+#    mkdir -p /usr/share/heka/lua_encoders && \
+#    mkdir -p /usr/share/heka/lua_filters && \
+#    mkdir -p /usr/share/heka/lua_modules && \
+#    cp /heka/sandbox/lua/decoders/* /usr/share/heka/lua_decoders && \
+#    cp /heka/sandbox/lua/encoders/* /usr/share/heka/lua_encoders && \
+#    cp /heka/sandbox/lua/filters/* /usr/share/heka/lua_filters && \
+#    cp /heka/build/heka/lib/luasandbox/modules/* /usr/share/heka/lua_modules
 
 EXPOSE 4881
 
 WORKDIR /heka/build/heka/bin
-CMD ["/heka/build/heka/bin/hekad", "--config", "/app/config.toml"]
+CMD ["hekad", "--config", "/app/config.toml"]
