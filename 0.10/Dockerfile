@@ -3,30 +3,11 @@ FROM ianneub/go:1.4
 RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get install -y cmake python-sphinx protobuf-compiler debhelper && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN mkdir /heka
-RUN git clone https://github.com/mozilla-services/heka.git /heka
-
-
-WORKDIR /heka
-RUN git checkout versions/0.10
-#COPY plugin_loader.cmake /heka/cmake/plugin_loader.cmake
-RUN /bin/bash -c 'source build.sh' && \
-    make install
-
-COPY config.toml /app/config.toml
-
-#RUN mkdir -p /usr/share/heka/lua_decoders && \
-#    mkdir -p /usr/share/heka/lua_encoders && \
-#    mkdir -p /usr/share/heka/lua_filters && \
-#    mkdir -p /usr/share/heka/lua_modules && \
-#    cp /heka/sandbox/lua/decoders/* /usr/share/heka/lua_decoders && \
-#    cp /heka/sandbox/lua/encoders/* /usr/share/heka/lua_encoders && \
-#    cp /heka/sandbox/lua/filters/* /usr/share/heka/lua_filters && \
-#    cp /heka/build/heka/lib/luasandbox/modules/* /usr/share/heka/lua_modules
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    mkdir /heka && \
+    wget https://github.com/mozilla-services/heka/releases/download/v0.10.0/heka_0.10.0_amd64.deb -O /heka/heka_0.10.0_amd64.deb && \
+    dpkg -i /heka/heka_0.10.0_amd64.deb
 
 EXPOSE 4881
 
-WORKDIR /heka/build/heka/bin
 CMD ["hekad", "--config", "/app/config.toml"]
